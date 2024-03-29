@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="mainVO" class="com.tjoeun.Tjproject.vo.MainVO" />
+
+<bean id="mainList" class="com.tjoeun.Tjproject.vo.MainList" />
+
+<bean id="mainCommentList" class="com.tjoeun.Tjproject.vo.MainCommentList" />
+
+<bean id="mainCommentVO" class="com.tjoeun.Tjproject.vo.MainCommentVO" />
+
+<bean id="memberVO" class="com.tjoeun.Tjproject.vo.MemberVO" />
+
+<bean id="paramC" class="com.tjoeun.Tjproject.vo.Param" />
+
+
+<bean id="main" class="com.tjoeun.Tjproject.service.MainService" />
+<bean id="login" class="com.tjoeun.Tjproject.service.LoginService" />
+<bean id="selectByidx" class="com.tjoeun.Tjproject.service.SelectByIdxService" />
+<bean id="register" class="com.tjoeun.Tjproject.service.RegisterService" />
+<bean id="write" class="com.tjoeun.Tjproject.service.WriteService" />
+<bean id="search" class="com.tjoeun.Tjproject.service.SearchService" />
+</beans>

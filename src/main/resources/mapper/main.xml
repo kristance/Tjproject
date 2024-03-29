@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tjoeun.Tjproject.dao.MainDAO">
+	
+	<!-- 로그인 계정 정보 일치 확인 -->
+	<select id="login" parameterType="com.tjoeun.Tjproject.vo.MemberVO" resultType="int">
+		select count(*) from register where id = #{id} and pw = #{pw}
+	</select>
+	
+	<!-- 비밀번호 일치 여부 -->
+	<select id="search_pw_check" parameterType="com.tjoeun.Tjproject.vo.MemberVO" resultType="int"> 
+		select count(*) from register where id = #{id} and name = #{name} and email = #{email}
+	</select>
+	
+	<!-- 비밀번호 찾기 -->
+	<select id="search_pw" parameterType="com.tjoeun.Tjproject.vo.MemberVO" resultType="com.tjoeun.Tjproject.vo.MemberVO">
+  		select * from register where id = #{id} and name = #{name} and email = #{email}
+	</select>
+	
+	<!-- id 중복 체크 -->
+	<select id="registerIdCheck" parameterType="java.lang.String" resultType="int">
+		select count(*) from register where id = #{id}
+	</select>
+	
+	<!-- 회원 가입  -->
+	<insert id="register" parameterType="com.tjoeun.Tjproject.vo.MemberVO" >
+		insert into register(id, pw, name, nick, email) values (#{id}, #{pw}, #{name}, #{nick}, #{email})
+	</insert>
+	
+	<!-- 조회수를 증가시킨다. -->
+	<update id="increment" parameterType="int">
+		update main set hit = hit + 1 where idx = #{idx} and deleted = 'no'
+	</update>
+	
+	<!-- 조회수 랭킹 글 5건을 불러옴 -->
+	<select id="selectHit" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where deleted = 'no' order by hit desc
+				) AA where rownum <= 5
+			) where rnum >= 1
+		]]>
+	</select>
+	
+	<!-- 추천수 랭킹 글 5건을 불러옴 -->
+	<select id="selectGood" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where deleted = 'no' order by good desc
+				) AA where rownum <= 5
+			) where rnum >= 1
+		]]>
+	</select>
+	
+	<!-- 신규글 랭킹 글 5건을 불러옴 -->
+	<select id="selectNew" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where deleted = 'no' order by idx desc
+				) AA where rownum <= 5
+			) where rnum >= 1
+		]]>
+	</select>
+	
+	<!-- 메인 글 1건 삭제 -->
+	<update id="delete" parameterType="int">
+		update main set deleted = 'yes', hit = -1000000, good = -1000000, category = '삭제' where idx = #{idx} and deleted = 'no'
+		<!-- update main set hit = -1000000, good = -1000000, category = '삭제', subject= '삭제된 글입니다', content = '삭제된 글입니다' where idx = #{idx} -->
+	</update>
+	
+	<!-- 메인 글 1건을 불러옴 -->
+	<select id="selectByIdx" parameterType="int" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		select * from main where idx = #{idx}
+	</select>
+	
+	<!-- 해당 글 추천 수 1회 증가 -->
+	<update id="good" parameterType="int">
+		update main set good = good + 1 where idx = #{idx} and deleted = 'no'
+	</update>
+	
+	<!-- 메인 글 1페이지를 불러옴 -->
+	<select id="selectList" parameterType="java.util.HashMap" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where deleted = 'no' order by idx desc
+				) AA where rownum <= #{endNo}
+			) where rnum >= #{startNo}
+		]]>
+	</select>
+	
+	<!-- 메인글 전체 개수를 얻어온다. -->
+	<select id="totalCount" resultType="int">
+		select count(*) from main where deleted = 'no'
+	</select>
+	
+	<!-- 검색된 글의 갯수 - id -->
+	<select id="totalCountSearched" parameterType="java.util.HashMap" resultType="int">
+    	select count(*) from main where id like '%'||#{searchVal}||'%'
+	</select>
+	
+	<!-- 검색된 글의 갯수 - subject -->
+	<select id="totalCountSearchedSubject" parameterType="java.util.HashMap" resultType="int">
+    	select count(*) from main where subject like '%'||#{searchVal}||'%'
+	</select>
+	
+	 <!-- 검색된 글 목록 - id-->
+    <select id="searchedListID" parameterType="com.tjoeun.Tjproject.vo.Param" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where id like '%'||#{searchVal}||'%'  order by idx desc
+				) AA where rownum <= #{endNo}
+			) where rnum >= #{startNo}
+		]]>
+    </select>
+    
+	 <!-- 검색된 글 목록 - subject-->
+    <select id="searchedListSubject" parameterType="com.tjoeun.Tjproject.vo.Param" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where subject like '%'||#{searchVal}||'%' order by idx desc
+				) AA where rownum <= #{endNo}
+			) where rnum >= #{startNo}
+		]]>
+    </select>
+	
+	<!-- category Sorted List Count -->
+	<select id="categorySortedListCount" parameterType="java.lang.String" resultType="int">
+		select count(*) from main where category = #{categoryOptionValue}
+	</select>
+	
+	<!-- category Sorted List  -->
+    <select id="categorySortedList" parameterType="com.tjoeun.Tjproject.vo.Param" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where category = #{category} order by idx desc
+				) AA where rownum <= #{endNo}
+			) where rnum >= #{startNo}
+		]]>
+    </select>
+	
+	
+	
+</mapper>
