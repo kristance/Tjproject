@@ -1,5 +1,7 @@
 package com.tjoeun.Tjproject;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.tjoeun.Tjproject.dao.MainCommentDAO;
 import com.tjoeun.Tjproject.dao.MainDAO;
+import com.tjoeun.Tjproject.service.CommentService;
 import com.tjoeun.Tjproject.service.LoginService;
 import com.tjoeun.Tjproject.service.MainService;
 import com.tjoeun.Tjproject.service.RegisterService;
@@ -196,7 +199,7 @@ public class HomeController {
 		model.addAttribute("idx", idx);
 		model.addAttribute("currentPage", currentPage);
 		
-		return "selectByIdx";	
+		return "redirect:selectByIdx";	
 		
 	}
 	
@@ -210,9 +213,7 @@ public class HomeController {
 		try {
 			job = request.getParameter("job");
 		} catch (Exception e) {
-			if (job == null) {
-				job = "";
-			}
+			
 		}
 		model.addAttribute("idx", idx);
 		model.addAttribute("currentPage", currentPage);
@@ -223,31 +224,156 @@ public class HomeController {
 		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
 		MainCommentDAO mapperComment = sqlSession.getMapper(MainCommentDAO.class);
 		MainVO vo = service.selectByIdx(idx, mapper);
+		HttpSession session = request.getSession();
 		logger.info("selectByidx -> mainVO {}",vo);
 		logger.info("selectByidx -> job -> {}",job);
 		MainCommentList commentList = service.selectList(idx, mapperComment);
-		model.addAttribute("vo", vo);
-		model.addAttribute("commentList", commentList);
 		
-		if (job.equals("delete")) {
-			service.delete(idx, mapper);
-			model.addAttribute("selectByIdxButton", "delete");
-		} else if(job.equals("update")) {
-			model.addAttribute("selectByIdxButton", "update");
-		} else if(job.equals("good")) {
-			service.good(idx, mapper);
-			model.addAttribute("selectByIdxButton", "good");
-		}  else if(job.equals("updateOK")) {
-			if (mainVO.getCategory() != null || !mainVO.getCategory().equals("카테고리 입력") ||
-					mainVO.getSubject() != null || !mainVO.getSubject().trim().equals("") ||
-							mainVO.getContent() != null || !mainVO.getContent().trim().equals("") ) {
-				service.update(mainVO, mapper);
+		if (job != null && job.equals("delete")) {
+//			pressed delete main button
+				service.delete(idx, mapper);
+				model.addAttribute("currentPage", currentPage);
+				return "redirect:Main";
+			} else if(job != null && job.equals("update")) {
+//				pressed update main button
+				model.addAttribute("idx", idx);
+				model.addAttribute("currentPage", currentPage);
+				return "redirect:readUpdate";
+			} else if(job != null && job.equals("good")) {
+//				pressed recommend button
+				service.good(idx, mapper);
+				session.setAttribute("goodidxcheck" + idx, "checked");
+				model.addAttribute("commentList", commentList);
+				model.addAttribute("idx", idx);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("enter", "\r\n");
+				model.addAttribute("Mainboard", vo);
+				return "read";
+				
+			} else if(job != null && job.equals("updateOK")) {
+				model.addAttribute("errorCheck", 1110);
+//				pressed Update complete button
+					if (mainVO.getCategory() != null || !mainVO.getCategory().equals("카테고리 입력")) {
+						model.addAttribute("errorCheck", 1111);
+						model.addAttribute("idx", idx);
+						model.addAttribute("currentPage", currentPage);
+						return "readUpdate";
+					} else if (mainVO.getSubject() != null || !mainVO.getSubject().trim().equals("") ) {
+						model.addAttribute("errorCheck", 1112);
+						model.addAttribute("idx", idx);
+						model.addAttribute("currentPage", currentPage);
+						model.addAttribute("idx", idx);
+						model.addAttribute("currentPage", currentPage);
+						return "readUpdate";
+					} else if (mainVO.getContent() != null || !mainVO.getContent().trim().equals("") ) {
+						model.addAttribute("errorCheck", 1113);
+						model.addAttribute("idx", idx);
+						model.addAttribute("currentPage", currentPage);
+						return "readUpdate";
+					}else {
+						model.addAttribute("errorCheck", 1114);
+						model.addAttribute("idx", idx);
+						model.addAttribute("currentPage", currentPage);
+						service.update(mainVO, mapper);
+						return "selectByIdx";
+					}
+			} else {
+//				게시물 글 선택, 수정 취소 버튼 입력
+				model.addAttribute("commentList", commentList);
+				model.addAttribute("idx", idx);
+				model.addAttribute("currentPage", currentPage);
+				model.addAttribute("enter", "\r\n");
+				model.addAttribute("Mainboard", vo);
+				
+				try {
+					session.getAttribute("goodidxcheck" + idx);
+				} catch (NullPointerException e) {
+					session.setAttribute("goodidxcheck" + idx, "un");
+				}
+				
+				return "read";
 			}
+	}
+	
+	@RequestMapping("/commentInsert")
+	public String commentInsert(HttpServletRequest request, Model model, MainCommentVO mainCommentVO) {
+		int currentPage = Integer.parseInt( request.getParameter("currentPage") );
+		
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
+		logger.info("commentInsert -> mainCommentVO -> {}", mainCommentVO);
+		MainCommentDAO mapperComment = sqlSession.getMapper(MainCommentDAO.class);
+		mapperComment.insertComment(mainCommentVO);
+		model.addAttribute("idx", mainCommentVO.getIdx());
+		model.addAttribute("currentPage", currentPage);
+		return "redirect:selectByIdx";
+	}
+	
+	@RequestMapping("/commentDelete")
+	public String commentDelete( HttpServletRequest request, Model model, MainCommentVO mainCommentVO) {
+		int currentPage = Integer.parseInt( request.getParameter("currentPage") );
+		int mainIdx = Integer.parseInt( request.getParameter("idx"));
+//		idx = commentIdx
+		int idx = Integer.parseInt( request.getParameter("commentidx"));
+		mainCommentVO.setGup(mainIdx);
+		
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
+		MainCommentDAO mapperComment = sqlSession.getMapper(MainCommentDAO.class);
+		CommentService service = ctx.getBean("comment", CommentService.class);
+		logger.info("maincommentVO -> {}", mainCommentVO);
+		logger.info("commentIdx -> {}", idx);
+		logger.info("mainCommentVO -> idx -> {},  main -> idx -> {}", mainCommentVO.getGup(), idx);
+		
+		mapperComment.deleteCheck(idx);
+		
+		model.addAttribute("idx", idx);
+		model.addAttribute("currentPage", currentPage);
+		
+		return "redirect:selectByIdx";
+	}
+	
+	@RequestMapping("/commentUpdate")
+	public String commentUpdate(HttpServletRequest request, Model model) {
+		String updatedCommentContent = request.getParameter("upcomment");
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
+		MainCommentVO originComment = ctx.getBean("mainCommentVO", MainCommentVO.class);
+		MainCommentVO afterUpdateComment = ctx.getBean("mainCommentVO", MainCommentVO.class);
+		MainCommentDAO mapperComment = sqlSession.getMapper(MainCommentDAO.class);
+//		comment - idx
+		
+		if (updatedCommentContent != null && !updatedCommentContent.equals("")) {
+			int idx = Integer.parseInt( request.getParameter("comidx"));
+			int currentPage = Integer.parseInt( request.getParameter("currentPage"));
+			int mainIdx = Integer.parseInt( request.getParameter("voidx") );
+			
+			originComment = mapperComment.beforeUpdateContent(idx);
+			updatedCommentContent.replace(">", "%gt;");
+			updatedCommentContent.replace("<", "%lt;");
+			updatedCommentContent.replace("<br/>", "\r\n");
+			originComment.setContent(updatedCommentContent.trim());
+			
+			mapperComment.updateComment(originComment);
+			
+			model.addAttribute("idx", mainIdx);
+			model.addAttribute("comidx", idx);
+			model.addAttribute("currentPage", currentPage);
+			model.addAttribute("updatedCommentContent", updatedCommentContent);
+			return "commentUpdate";
+			
+		} else {
+			int idx = Integer.parseInt( request.getParameter("comidx"));
+			int currentPage = Integer.parseInt( request.getParameter("currentPage"));
+			int mainIdx = Integer.parseInt( request.getParameter("voidx") );
+			
+			model.addAttribute("idx", mainIdx);
+			model.addAttribute("comidx", idx);
+			model.addAttribute("currentPage", currentPage);
+			model.addAttribute("updatedCommentContent", updatedCommentContent);
+			return "commentUpdate";
 		}
 		
-		
-		return "selectByIdx";
 	}
+	
+	
 	
 	@RequestMapping("/logout")
 	public String logout (HttpServletRequest request, Model model) {
@@ -301,9 +427,9 @@ public class HomeController {
 		case 1 : // main.jsp
 			return "redirect:Main";
 		case 2 : // write.jsp
-			return "write";
+			return "redirect:write";
 		case 3 : // read.jsp
-			return "selectByIdx";
+			return "redirect:selectByIdx";
 		default : // main.jsp
 			return "redirect:Main";
 		}
