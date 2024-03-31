@@ -22,4 +22,5 @@
 <bean id="register" class="com.tjoeun.Tjproject.service.RegisterService" />
 <bean id="write" class="com.tjoeun.Tjproject.service.WriteService" />
 <bean id="search" class="com.tjoeun.Tjproject.service.SearchService" />
+<bean id="comment" class="com.tjoeun.Tjproject.service.CommentService" />
 </beans>

@@ -24,7 +24,7 @@
 		<nav class="navbar navbar-light bg-light static-top justify-content-center">
 			<div class="row">
 				<div class="col-lg-2 d-flex align-items-center justify-content-center">
-					<input class="btn btn-warning" type="button" value="Main으로" onclick="location.href='list'"
+					<input class="btn btn-warning" type="button" value="Main으로" onclick="location.href='Main'"
 						style="width: 100%; height: 100%; max-height: 5em;"/>
 				</div>
 		

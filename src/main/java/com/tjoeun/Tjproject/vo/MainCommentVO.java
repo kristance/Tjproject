@@ -10,6 +10,7 @@ public class MainCommentVO {
 	private int gup;
 	private String deleted;
 	public int getIdx() {
+		
 		return idx;
 	}
 	public void setIdx(int idx) {

@@ -3,9 +3,30 @@
 <mapper namespace="com.tjoeun.Tjproject.dao.MainCommentDAO">
 
 <!-- 글 페이지의 댓글 전체를 가져옴 -->
-	<select id="selectCommentList" parameterType="int" resultType="java.util.ArrayList">
+	<select id="selectCommentList" parameterType="int" resultType="com.tjoeun.Tjproject.vo.MainCommentVO">
 		select * from maincomment where gup = #{idx} order by idx asc
 	</select>
+	
+	<!-- comment - insert -->
+	<insert id="insertComment" parameterType="com.tjoeun.Tjproject.vo.MainCommentVO">
+		insert into maincomment (idx, name, content, gup)
+		values (maincomment_idx_seq.nextval, #{name}, #{content}, #{gup})
+	</insert>
+	
+	<!-- comment - delete 'no' -> 'yes' -->
+	<update id="deleteCheck" parameterType="int">
+		update maincomment set deleted = 'yes' where idx = #{idx}
+	</update>
+	
+	<!-- comment - 수정 전 글 -->
+	<select id="beforeUpdateContent" parameterType="int" resultType="com.tjoeun.Tjproject.vo.MainCommentVO">
+		select * from maincomment where idx = #{idx}
+	</select>
+	
+	<!-- comment -> update -->
+	<update id="updateComment" parameterType="com.tjoeun.Tjproject.vo.MainCommentVO">
+		update maincomment set content = #{content} where idx = #{idx}
+	</update>
 
 
 </mapper>
