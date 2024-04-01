@@ -19,6 +19,7 @@ function categorySortFn() {
 }
 
 
+
 function setting(idx, mode) {
 	// console.log('setting(' + mode + ')')
 	// console.log('form'+ idx)

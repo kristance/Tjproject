@@ -51,10 +51,6 @@
 	}
 
 	
-//	조회수가 높은 순으로 메인 글을 얻어온다.
-	MainList selectHit = MainService.getInstance().selectHit(); // 조회수 랭킹
-	MainList selectGood = MainService.getInstance().selectGood(); // 추천수 랭킹
-	MainList selectNew = MainService.getInstance().selectNew(); // 신규글 랭킹
 	
 // 찾은 글을 request 영역에 저장해서 메인글을 브라우저에 표시하는 페이지(Main.jsp)로 넘겨준다.
 	request.setAttribute("mainList", mainList);

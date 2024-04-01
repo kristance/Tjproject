@@ -98,7 +98,7 @@
 	</select>
 	
 	<!-- 검색된 글의 갯수 - id -->
-	<select id="totalCountSearched" parameterType="java.util.HashMap" resultType="int">
+	<select id="totalCountSearchedID" parameterType="java.util.HashMap" resultType="int">
     	select count(*) from main where id like '%'||#{searchVal}||'%'
 	</select>
 	

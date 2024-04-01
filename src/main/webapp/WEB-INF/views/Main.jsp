@@ -65,12 +65,11 @@
 				
 				<div id="div2_1" class="d-flex flex-column justify-content-center align-items-center">제목/ID 검색
 					<form id="search" action="search" method="post">
-						<select name="searchTag" class="form-control form-control-sm">
-							<option value="subject">subject</option>
-							<option value="id">id</option>
-							<option value="category">category</option>
-						</select>
-						<input class="form-control form-control-sm" size="12" name="searchVal" type="text" placeholder="검색어 입력"> 
+							<select name="searchTag" class="form-control form-control-sm">
+								<option value="subject" selected="selected">subject</option>
+								<option value="id">id</option>
+							</select>
+						<input class="form-control form-control-sm" size="12" name="searchVal" type="text" placeholder="검색어 입력" value="${searchVal}"> 
 						<input type="submit" class="btn btn-outline-secondary btm-sm" value="검색" maxlength="10"
 							style="width: 100%;">
 					</form>
