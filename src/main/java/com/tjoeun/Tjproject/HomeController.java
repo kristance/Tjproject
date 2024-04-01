@@ -1,7 +1,5 @@
 package com.tjoeun.Tjproject;
 
-import java.util.HashMap;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -61,11 +59,51 @@ public class HomeController {
 		
 		return "redirect:Main";
 	}
+	@RequestMapping("/list")
+	public String list (HttpServletRequest request, Model model) {
+		int currentPage = 1;
+		try {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		} catch (Exception e) {
+			
+		}
+		
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
+		MainService service = ctx.getBean("main", MainService.class);
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		HttpSession session = request.getSession();
+		MainList mainList = service.selectList(currentPage, mapper);
+		logger.info("####list -> mainList -> {}", mainList);
+		if (session.getAttribute("mainList") != null) {
+			mainList = (MainList) session.getAttribute("mainList");
+		}
+		
+		model.addAttribute("mainList",mainList);
+		model.addAttribute("currentPage", currentPage);
+			
+		
+		return "Main";
+	}
+	
+	
+	
 	
 	@RequestMapping ("/Main") 
-	public String list (HttpServletRequest request, Model model) {
+	public String main (HttpServletRequest request, Model model) {
 		logger.info("homecontroller -> main()");
+		HttpSession session = request.getSession();
+		session.removeAttribute("searchVal");
+		session.removeAttribute("searchTag");
+		session.removeAttribute("mainList");
 		
+		return "redirect:list";
+		
+		
+	}
+	
+	@RequestMapping("/search")
+	public String search (HttpServletRequest request, Model model) {
+
 		int currentPage = 1;
 		try {
 			currentPage = Integer.parseInt(request.getParameter("currentPage"));
@@ -73,61 +111,19 @@ public class HomeController {
 			
 		}
 		
+		String searchTag = request.getParameter("searchTag"); // 태그(작가,제목)
+		String category = request.getParameter("category"); // 카테고리
+		String searchVal = request.getParameter("searchVal"); // 검색어
 		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
-		MainService service = ctx.getBean("main", MainService.class);
+		MainList mainList = ctx.getBean("mainList", MainList.class);
 		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
-		MainList mainList = service.selectList(currentPage, mapper);
+		SearchService service = ctx.getBean("search", SearchService.class);
+		if (searchVal == null || searchVal.trim().length() == 0) {
+			mainList = service.selectSearchList(currentPage, mapper);
+		} else {
 		
-		model.addAttribute("mainList",mainList);
-		model.addAttribute("currentPage", currentPage);
-		return "Main";
+		}
 	}
-	
-//	@RequestMapping("/search")
-//	public String search (HttpServletRequest request, Model model) {
-//		int currentPage = 1;
-//		try {
-//			currentPage = Integer.parseInt(request.getParameter("currentPage"));
-//		} catch (NumberFormatException e) {
-//			
-//		}
-//		HttpSession session = request.getSession();
-//		
-//		String searchTag = ""; 
-//		String searchVal = "";
-//		try {
-//			searchTag = request.getParameter("searchTag");
-//			searchVal = request.getParameter("searchVal").trim();
-//		} catch (Exception e) {
-//		}
-//		
-//		
-//		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
-//		MainList mainList = ctx.getBean("mainList", MainList.class);
-//		SearchService service = ctx.getBean("search", SearchService.class);
-//		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
-//		
-//		if (searchVal != null || searchVal.length() != 0) {
-//			session.setAttribute("searchTag", searchTag);
-//			session.setAttribute("searchVal", searchVal);
-//			
-//			model.addAttribute("request", request);
-//			mainList = service.search(model, mapper);
-//			
-//			session.setAttribute("mainList", mainList);
-//			model.addAttribute("mainList", mainList);
-//			model.addAttribute("currentPage", currentPage);
-//			model.addAttribute("searchTag", searchTag);
-//			model.addAttribute("searchVal", searchVal);
-//			
-//			return "Main";
-//			
-//		} else if (searchVal == null || searchVal.trim().length() == 0) { 
-//			return "redirect:Main";
-//		} else {
-//			return "redirect:Main";
-//		}
-//	}
 	
 	@RequestMapping("/categorySort")
 	public String categorySort (HttpServletRequest request, Model model) {
