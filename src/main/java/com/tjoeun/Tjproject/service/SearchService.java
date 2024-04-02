@@ -51,18 +51,61 @@ public class SearchService implements PrimitiveService {
 		return mainList;
 	}
 
-	public MainList selectSearchList(int currentPage, MainDAO mapper) {
+	
+//	id
+	public MainList search(HashMap<String, Object> hmap, MainDAO mapper) {
 		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
 		MainList mainList = ctx.getBean("mainList", MainList.class);
+		int currentPage = (int) hmap.get("currentPage");
+		String searchVal = (String) hmap.get("searchVal");
+		String searchTag = (String) hmap.get("searchTag");
+		logger.info("searchService -> searchVal -> {}, searchTag -> {}", searchVal, searchTag);
+		Param param = ctx.getBean("paramC", Param.class);
 		int pageSize = 10;
-		int totalCount = mapper.totalCount();		
-		mainList.setMainList(currentPage, currentPage, currentPage);
+		
+		if(searchTag != null && searchTag.trim().equalsIgnoreCase("id")) {
+			int totalCount = mapper.searchIDCount(searchVal);
+			mainList.setMainList(pageSize, totalCount, currentPage);
+			param.setStartNo(mainList.getStartNo());
+			param.setEndNo(mainList.getEndNo());
+			param.setSearchVal(searchVal);
+			mainList.setList(mapper.searchIDList(param));
+			logger.info("searchService1 -> searchVal -> {}, searchTag -> {}", searchVal, searchTag);
+		} else if (searchTag != null && searchTag.trim().equalsIgnoreCase("subject")) {
+			int totalCount = mapper.searchSubjectCount(searchVal);
+			mainList.setMainList(pageSize, totalCount, currentPage);
+			param.setStartNo(mainList.getStartNo());
+			param.setEndNo(mainList.getEndNo());
+			param.setSearchVal(searchVal);
+			mainList.setList(mapper.searchSubjectList(param));
+			logger.info("searchService2 -> searchVal -> {}, searchTag -> {}", searchVal, searchTag);
+			
+		}
+		
+		logger.info("@@@@@ searchService -> {}", mainList);
+		return mainList;
+	}
+
+	
+//	keyword - no
+	public MainList searchNone(int currentPage, MainDAO mapper) {
+		int pageSize = 10;
+		int totalCount = mapper.totalCount();
+		
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
+		MainList mainList = ctx.getBean("mainList", MainList.class);
+		mainList.setMainList(pageSize, totalCount, currentPage);
 		HashMap<String, Integer> hmap = new HashMap<String, Integer>();
 		hmap.put("startNo", mainList.getStartNo());
 		hmap.put("endNo", mainList.getEndNo());
-		mainList.setList(MainDAO.getInstance().selectList(mapper, hmap));
-		return null;
+		mainList.setList(mapper.selectList(hmap));
+		
+		return mainList;
 	}
+
+
+
+
 
 
 

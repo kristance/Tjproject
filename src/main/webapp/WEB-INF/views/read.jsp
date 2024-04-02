@@ -24,7 +24,7 @@
 		<nav class="navbar navbar-light bg-light static-top justify-content-center">
 			<div class="row">
 				<div class="col-lg-2 d-flex align-items-center justify-content-center">
-					<input class="btn btn-warning" type="button" value="Main으로" onclick="location.href='Main'"
+					<input class="btn btn-warning" type="button" value="Main으로" onclick="location.href='list'"
 						style="width: 100%; height: 100%; max-height: 5em;"/>
 				</div>
 		
@@ -327,85 +327,98 @@
 	
 	
 			<!-- 오른 쪽 새글, 추천 글 -->
-			<div class="col-lg-2 bg-light justify-content-center align-items-center">
-				<div style="position: sticky; top:0rem;">
+				<div class="col-lg-2 bg-light justify-content-center align-items-center">
 					<h4 align="center">추천 소설 목록</h4><hr/>
-						<div class="rankHyper2" style="color: #198754;">
-						조회수 TOP 5<br/>
-						</div>
-						<ol>
-							<c:set var="list" value="${selectHit.list}" />
-							<c:forEach var="vo" items="${list}">
-								<c:if test="${vo.deleted != 'yes'}">
-									<li style="color: #198754;">
-										<div class="rankHyper">
-											<a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-												href="increment?idx=${vo.idx}&currentPage=${currentPage}">
-											${vo.getSubject()}(${vo.getHit()})</a>
-										</div>
-									</li>
-								</c:if>
-								<c:if test="${vo.deleted == 'yes'}">
-									<li style="color: #198754;">
-										<div class="rankHyper">
-											<a href="">삭제된 글입니다</a>
-										</div>
-									</li>
-								</c:if>
+						<div class="dropdown">
+							<a class="btn btn-outline-success dropdown-toggle" href="" role="button" 
+								  id="dropdownMenuLinkHit"
+								  data-bs-toggle="dropdown"
+								  aria-expanded="false"
+								  style="width: 100%; height: 80%;">
+									조회수 TOP 5<br/>
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuLinkHit">
+								<c:set var="list" value="${selectHit.list}" />
+								<c:forEach var="vo" items="${list}">
+									<c:if test="${vo.deleted != 'yes'}">
+										<li>
+											<div class="rankHyper">
+												<a class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+													href="increment?idx=${vo.idx}&currentPage=${currentPage}">
+												${vo.getSubject()}(${vo.getHit()})</a>
+											</div>
+										</li>
+									</c:if>
+									<c:if test="${vo.deleted == 'yes'}">
+										<li>
+											<div class="rankHyper">
+												<a href="">삭제된 글입니다</a>
+											</div>
+										</li>
+									</c:if>
+								</c:forEach>
+							</ul>
+						</div><hr/>
+					
+						<div class="dropdown">
+								<a class="btn btn-outline-danger dropdown-toggle form-control" href="" role="button" 
+								   id="dropdownMenuLinkGood"
+								   data-bs-toggle="dropdown"
+								   aria-expanded="false"
+								   style="width: 100%; height: 80%;">
+								   추천수 TOP 5<br/>
+								</a>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuLinkGood">
+								<c:set var="list" value="${selectGood.list}" />
+								<c:forEach var="vo" items="${list}">
+									<c:if test="${vo.deleted == 'no'}">
+										<li>
+											<div class="rankHyper">
+												<a class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+													href="increment?idx=${vo.idx}&currentPage=${currentPage}">
+												${vo.getSubject()}(${vo.getGood()})</a>
+											</div>
+										</li>
+										</c:if>
+										<c:if test="${vo.deleted == 'yes'}">
+										<li>
+											<div class="rankHyper">
+												삭제된 글입니다
+											</div>
+										</li>
+									</c:if>
 							</c:forEach>
-						</ol><hr/>
-						<div class="rankHyper2" style="color: #dc3545;">
-						추천수 TOP 5<br/>
+							</ul><hr/>
 						</div>
-						<ol>
-						<c:set var="list" value="${selectGood.list}" />
-						<c:forEach var="vo" items="${list}">
-							<c:if test="${vo.deleted == 'no'}">
-							<li style="color: #dc3545;">
-								<div class="rankHyper">
-									<a class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-										href="increment?idx=${vo.idx}&currentPage=${currentPage}">
-									${vo.getSubject()}(${vo.getGood()})</a>
-								</div>
-							</li>
-							</c:if>
-							<c:if test="${vo.deleted == 'yes'}">
-							<li>
-								<div class="rankHyper">
-									삭제된 글입니다
-								</div>
-							</li>
-							</c:if>
-						</c:forEach>
-					</ol><hr/>
-					<div class="rankHyper2" style="color: #0d6efd;">
-					Today NEW 5<br/>
+						<div class="dropdown">
+							<a class="btn btn-outline-primary dropdown-toggle" href="" role="button" 
+							   id="dropdownMenuLinkNew"
+							   data-bs-toggle="dropdown"
+							   aria-expanded="false"
+							   style="width: 100%; height: 80%;">
+								Today NEW 5<br/>
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuLinkNew">
+								<c:set var="list" value="${selectNew.list}" />
+								<c:forEach var="vo" items="${list}">
+									<c:if test="${vo.deleted == 'no'}">
+										<li>
+											<div class="rankHyper">
+												<a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+													href="increment?idx=${vo.idx}&currentPage=${currentPage}">
+												${vo.getSubject()}</a>
+											</div>
+										</li>
+									</c:if>
+									<c:if test="${vo.deleted == 'yes'}">
+										<li>
+											<div class="rankHyper">삭제된 글입니다</div>
+										</li>
+										</c:if>
+								</c:forEach>
+							</ul><hr/>
+						</div>
 					</div>
-					<ol>
-						<c:set var="list" value="${selectNew.list}" />
-						<c:forEach var="vo" items="${list}">
-							<fmt:formatDate var="writeDate" value="${vo.getWriteDate()}" pattern="MM/dd HH:mm:ss"/>
-							<c:if test="${vo.deleted == 'no'}">
-								<li style="color: #0d6efd;">
-									<div class="rankHyper">
-										<a class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
-											href="increment?idx=${vo.idx}&currentPage=${currentPage}">
-										${vo.getSubject()}</a>
-									</div>
-								</li>
-							</c:if>
-							<c:if test="${vo.deleted == 'yes'}">
-								<li>
-									<div class="rankHyper">
-										삭제된 글입니다
-									</div>
-								</li>
-							</c:if>
-						</c:forEach>
-					</ol><hr/>
-				</div>
-			
-			</div>
 			
 		</div>
 	</div>

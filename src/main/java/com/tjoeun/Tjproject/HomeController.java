@@ -1,5 +1,7 @@
 package com.tjoeun.Tjproject;
 
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -57,7 +59,7 @@ public class HomeController {
 		session.setAttribute("selectGood", selectGood);
 		session.setAttribute("selectNew", selectNew);
 		
-		return "redirect:Main";
+		return "redirect:list";
 	}
 	@RequestMapping("/list")
 	public String list (HttpServletRequest request, Model model) {
@@ -74,55 +76,67 @@ public class HomeController {
 		HttpSession session = request.getSession();
 		MainList mainList = service.selectList(currentPage, mapper);
 		logger.info("####list -> mainList -> {}", mainList);
-		if (session.getAttribute("mainList") != null) {
-			mainList = (MainList) session.getAttribute("mainList");
-		}
 		
 		model.addAttribute("mainList",mainList);
 		model.addAttribute("currentPage", currentPage);
-			
+		session.setAttribute("mainList", mainList);
+		session.setAttribute("currentPage", currentPage);
 		
 		return "Main";
 	}
 	
 	
-	
-	
 	@RequestMapping ("/Main") 
 	public String main (HttpServletRequest request, Model model) {
 		logger.info("homecontroller -> main()");
-		HttpSession session = request.getSession();
-		session.removeAttribute("searchVal");
-		session.removeAttribute("searchTag");
-		session.removeAttribute("mainList");
 		
-		return "redirect:list";
-		
+		return "Main";
 		
 	}
 	
 	@RequestMapping("/search")
 	public String search (HttpServletRequest request, Model model) {
-
+		
 		int currentPage = 1;
 		try {
-			currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		} catch (NumberFormatException e) {
-			
+			currentPage = Integer.parseInt( request.getParameter("currentPage") );
+		} catch (Exception e) {
 		}
-		
-		String searchTag = request.getParameter("searchTag"); // 태그(작가,제목)
-		String category = request.getParameter("category"); // 카테고리
-		String searchVal = request.getParameter("searchVal"); // 검색어
+		String searchVal = request.getParameter("searchVal");
+		String searchTag = request.getParameter("searchTag");
 		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
 		MainList mainList = ctx.getBean("mainList", MainList.class);
 		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
-		SearchService service = ctx.getBean("search", SearchService.class);
-		if (searchVal == null || searchVal.trim().length() == 0) {
-			mainList = service.selectSearchList(currentPage, mapper);
-		} else {
+		SearchService service  = ctx.getBean("search", SearchService.class);
+		HttpSession session = request.getSession();
 		
+		HashMap<String, Object> hmap = new HashMap<String, Object>();
+		hmap.put("searchVal", searchVal);
+		hmap.put("searchTag", searchTag);
+		hmap.put("currentPage", currentPage);
+		logger.info("1111searchVal -> {}, searchTag -> {}", searchVal, searchTag);
+		if (searchVal != null || searchTag != null || searchTag.trim().length() != 0) {
+			if (searchVal.trim().length() != 0) {
+				mainList = service.search(hmap, mapper);
+				System.out.println("### search () ### + " + mainList );
+				model.addAttribute("mainList", mainList);
+				model.addAttribute("currentPage", currentPage);
+				session.setAttribute("searchVal", searchVal);
+				session.setAttribute("searchTag", searchTag);
+			} else {
+				mainList = service.searchNone(currentPage, mapper);
+				session.removeAttribute("searchVal");
+				session.removeAttribute("searchTag");
+				model.addAttribute("mainList", mainList);
+				model.addAttribute("currentPage", currentPage);
+			}
+		}else {
+//		none	
 		}
+		
+					
+		
+		return "Main";
 	}
 	
 	@RequestMapping("/categorySort")
@@ -146,22 +160,40 @@ public class HomeController {
 	@RequestMapping("/login")
 	public String login (HttpServletRequest request, Model model) {
 		logger.info("homecontroller -> login()");
-		int backPage = Integer.parseInt( request.getParameter("backPage") );
+		int backPage = 1;
+		int idx = 1;
+		int currentPage = 1;
+		try {
+			backPage = Integer.parseInt( request.getParameter("backPage") );
+			idx = Integer.parseInt( request.getParameter("idx"));
+			currentPage = Integer.parseInt( request.getParameter("currentPage"));
+		} catch (Exception e) {
+		}
+		
 		model.addAttribute("backPage", backPage);
+		model.addAttribute("idx",idx);
+		model.addAttribute("currentPage", currentPage);
 		return "login";
 	}
 	
 	@RequestMapping("/loginOK")
 	public String loginOK (HttpServletRequest request, Model model) {
 		logger.info("homecontroller -> loginOK()");
-		int backPage = 1;
-		try{
-			backPage = Integer.parseInt(request.getParameter("backPage") );
-		} catch (NumberFormatException e){
-		}
 		
 		String id = request.getParameter("id");
 		String password = request.getParameter("pw");
+		
+		int backPage = 1;
+		int idx = 1;
+		int currentPage = 1;
+		try {
+			backPage = Integer.parseInt( request.getParameter("backPage") );
+			idx = Integer.parseInt( request.getParameter("idx"));
+			currentPage = Integer.parseInt( request.getParameter("currentPage"));
+		} catch (Exception e) {
+		}
+		
+		
 		
 		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
 		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
@@ -171,10 +203,12 @@ public class HomeController {
 		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
 		
 		int loginCheck = service.login(memberVO, mapper);
-		
+			
 		model.addAttribute("loginCheck", loginCheck);
 		model.addAttribute("memberVO", memberVO);
 		model.addAttribute("backPage", backPage);
+		model.addAttribute("idx",idx);
+		model.addAttribute("currentPage", currentPage);
 		
 		
 		return "loginOK";
@@ -202,12 +236,15 @@ public class HomeController {
 	@RequestMapping("/selectByIdx")
 	public String selectByIdx (HttpServletRequest request, Model model, MainVO mainVO, MainCommentVO co) {
 		logger.info("homecontroller -> selectByIdx()");
+		String job = "";
+		job = request.getParameter("job");
+		int currentPage = Integer.parseInt(request.getParameter("currentPage"));
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		logger.info("selectByIdx -> idx -> {}", idx);
-		int currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		String job = "";
+		
 		try {
-			job = request.getParameter("job");
+			idx = (int) request.getAttribute("idx");
+			currentPage = (int) request.getAttribute("currentPage");
 		} catch (Exception e) {
 			
 		}
@@ -229,7 +266,7 @@ public class HomeController {
 //			pressed delete main button
 				service.delete(idx, mapper);
 				model.addAttribute("currentPage", currentPage);
-				return "redirect:Main";
+				return "redirect:list";
 			} else if(job != null && job.equals("update")) {
 //				pressed update main button
 				model.addAttribute("idx", idx);
@@ -374,10 +411,11 @@ public class HomeController {
 	@RequestMapping("/logout")
 	public String logout (HttpServletRequest request, Model model) {
 		logger.info("homecontroller -> logout()");
-		int backPage = Integer.parseInt( request.getParameter("backPage"));
+		int backPage = 1;
 		int currentPage = 1;
 		int idx = 1;
 		try {
+			backPage = Integer.parseInt( request.getParameter("backPage"));
 			currentPage = Integer.parseInt( request.getParameter("currentPage"));
 			idx = Integer.parseInt(request.getParameter("idx"));
 		} catch (Exception e) {
@@ -393,13 +431,13 @@ public class HomeController {
 		
 		switch (backPage) {
 		case 1 : // main.jsp
-			return "redirect:Main";
+			return "redirect:list";
 		case 2 : // write.jsp
 			return "write";
 		case 3 : // read.jsp
-			return "selectByIdx?idx=" + idx + "&currentPage=" + currentPage + "'";
+			return "redirect:selectByIdx";
 		default : // main.jsp
-			return "redirect:Main";
+			return "redirect:list";
 		}
 	}
 	
@@ -421,13 +459,13 @@ public class HomeController {
 		
 		switch (backPage) {
 		case 1 : // main.jsp
-			return "redirect:Main";
+			return "redirect:list";
 		case 2 : // write.jsp
 			return "redirect:write";
 		case 3 : // read.jsp
 			return "redirect:selectByIdx";
 		default : // main.jsp
-			return "redirect:Main";
+			return "redirect:list";
 		}
 	}
 	

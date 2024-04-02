@@ -50,27 +50,27 @@ public interface MainDAO {
 //	main -> 1 page 글
 	ArrayList<MainVO> selectList(HashMap<String, Integer> hmap);
 
-
-
-//	검색된 글의 갯수 - id
-	int totalCountSearchedID(HashMap<String, String> hmap);
-
-//	검색된 글의 갯수 - subject
-	int totalCountSearchedSubject(HashMap<String, String> hmap);
-
-
-//	검색된 글의 목록 - id
-	ArrayList<MainVO> searchedListID(Param param);
-
-//	검색된 글의 목록 - subject
-	ArrayList<MainVO> searchedListSubject(Param param);
-
-	
 //	category Sorted List Count
 	int categorySortedListCount(String categoryOptionValue);
 
 //	category Sorted List
 	ArrayList<MainVO> categorySortedList(Param param);
+
+
+// id - count
+	int searchIDCount(String searchVal);
+
+//	id - list
+	ArrayList<MainVO> searchIDList(Param param);
+
+//	subject - count
+	int searchSubjectCount(String searchVal);
+
+//	subject - list
+	ArrayList<MainVO> searchSubjectList(Param param);
+
+//	save -> article
+	void insert(MainVO mainVO);
 
 
 
