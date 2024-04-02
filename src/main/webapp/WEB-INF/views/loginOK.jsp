@@ -1,3 +1,4 @@
+<%@page import="java.net.URLEncoder"%>
 <%@page import="com.tjoeun.Tjproject.vo.MemberVO"%>
 <%@page import="com.tjoeun.Tjproject.service.MainService"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -6,20 +7,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<script type="text/javascript" src="./js/mainjs.js"></script>
 <title>로그인</title>
 </head>
 <body>
 
 <%
 	request.setCharacterEncoding("UTF-8");
-	
-	int loginCheck = (int) request.getAttribute("loginCheck");
 	MemberVO vo = (MemberVO) request.getAttribute("memberVO");
-	int backPage = (int) request.getAttribute("backPage");
-	
 	String id = vo.getId();
 	String password = vo.getPw();
+	String encodedId = URLEncoder.encode(id, "UTF-8");
+	int loginCheck = (int) request.getAttribute("loginCheck");
+	int backPage = (int) request.getAttribute("backPage");
+	
 	
 	out.println("<script>");
 	if (loginCheck != 1) {
@@ -29,6 +29,10 @@
 		session.setAttribute("loginInfoID", id);
 		session.setAttribute("loginInfoPW", password);
 		session.setAttribute("loginCheck", loginCheck);
+		Cookie cookie = new Cookie("saveID", encodedId);
+		cookie.setMaxAge(100000);
+		response.addCookie(cookie);
+		
 		out.println(backPage);
 		out.println("alert('로그인 성공')");
 //		out.println("alert('"+ backPage +"')");

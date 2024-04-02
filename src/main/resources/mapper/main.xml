@@ -96,38 +96,7 @@
 	<select id="totalCount" resultType="int">
 		select count(*) from main where deleted = 'no'
 	</select>
-	
-	<!-- 검색된 글의 갯수 - id -->
-	<select id="totalCountSearchedID" parameterType="java.util.HashMap" resultType="int">
-    	select count(*) from main where id like '%'||#{searchVal}||'%'
-	</select>
-	
-	<!-- 검색된 글의 갯수 - subject -->
-	<select id="totalCountSearchedSubject" parameterType="java.util.HashMap" resultType="int">
-    	select count(*) from main where subject like '%'||#{searchVal}||'%'
-	</select>
-	
-	 <!-- 검색된 글 목록 - id-->
-    <select id="searchedListID" parameterType="com.tjoeun.Tjproject.vo.Param" resultType="com.tjoeun.Tjproject.vo.MainVO">
-		<![CDATA[
-			select * from ( 
-				select rownum rnum, AA.* from (
-					select * from main where id like '%'||#{searchVal}||'%'  order by idx desc
-				) AA where rownum <= #{endNo}
-			) where rnum >= #{startNo}
-		]]>
-    </select>
     
-	 <!-- 검색된 글 목록 - subject-->
-    <select id="searchedListSubject" parameterType="com.tjoeun.Tjproject.vo.Param" resultType="com.tjoeun.Tjproject.vo.MainVO">
-		<![CDATA[
-			select * from ( 
-				select rownum rnum, AA.* from (
-					select * from main where subject like '%'||#{searchVal}||'%' order by idx desc
-				) AA where rownum <= #{endNo}
-			) where rnum >= #{startNo}
-		]]>
-    </select>
 	
 	<!-- category Sorted List Count -->
 	<select id="categorySortedListCount" parameterType="java.lang.String" resultType="int">
@@ -145,6 +114,42 @@
 		]]>
     </select>
 	
+	<!-- search Id -->
+	<select id="searchIDCount" parameterType="java.lang.String" resultType="int">
+		select count(*) from main where id like '%'||#{searchVal}||'%'
+	</select>
 	
+	<!-- search id -->
+	<select id="searchIDList" parameterType="com.tjoeun.Tjproject.vo.Param" resultType="com.tjoeun.Tjproject.vo.MainVO">
+	<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where id like '%'||#{searchVal}||'%' order by idx desc
+				) AA where rownum <= #{endNo}
+			) where rnum >= #{startNo}
+		]]>
+		
+	</select>
+	
+	<!-- search - subject -->
+	<select id="searchSubjectCount" parameterType="java.lang.String" resultType="int">
+		select count(*) from main where subject like '%'||#{searchVal}||'%'
+	</select>
+	
+	<!-- search subject -->
+	<select id="searchSubjectList" parameterType="com.tjoeun.Tjproject.vo.Param" resultType="com.tjoeun.Tjproject.vo.MainVO">
+		<![CDATA[
+			select * from ( 
+				select rownum rnum, AA.* from (
+					select * from main where subject like '%'||#{searchVal}||'%' order by idx desc
+				) AA where rownum <= #{endNo}
+			) where rnum >= #{startNo}
+		]]>
+	</select>
+	
+	<!-- save -> article -->
+	<insert id="insert" parameterType="com.tjoeun.Tjproject.vo.MainVO">
+		insert into main(idx, gup, id, subject, category, content) values (main_idx_seq.nextval, main_idx_seq.currval, #{id}, #{subject}, #{category}, #{content})
+	</insert>
 	
 </mapper>

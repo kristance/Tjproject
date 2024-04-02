@@ -39,7 +39,10 @@
 		out.println("</script>");
 
 	} else {
-		response.sendRedirect("./Main");
+		out.println("<script>");
+		out.println("location.href='list'");
+		out.println("</script>");
+		
 	}
 %>
 		

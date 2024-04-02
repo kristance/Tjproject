@@ -18,6 +18,7 @@ public class WriteService implements PrimitiveService {
 		Map<String, Object> map = model.asMap();
 		MainVO mainVO = (MainVO) map.get("mainVO");
 		logger.info("writeService -> execute() -> mainVO {}", mainVO);
+		mapper.insert(mainVO);
 	}
 
 	@Override
