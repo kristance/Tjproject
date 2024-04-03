@@ -1,9 +1,16 @@
 package com.tjoeun.Tjproject;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
@@ -12,10 +19,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.tjoeun.Tjproject.dao.MainCommentDAO;
 import com.tjoeun.Tjproject.dao.MainDAO;
@@ -75,16 +90,14 @@ public class HomeController {
 				}
 			}
 		}
-		System.out.println("autoLogin -> " + autoLogin);
+		
+//		System.out.println("autoLogin -> " + autoLogin);
 		if (autoLoginCheck.trim().equalsIgnoreCase("on") &&
 										autoLogin != null &&
 										autoLogin.trim().length() != 0) {
 			session.setAttribute("loginCheck", 1);
 			session.setAttribute("loginInfoID", autoLogin);
 		}
-		
-			
-		
 		
 		
 		return "redirect:list";
@@ -244,6 +257,43 @@ public class HomeController {
 		
 		
 		return "loginOK";
+	}
+	
+	@RequestMapping("/memberInfo")
+	public String memberInfo(HttpServletRequest request, Model model) {
+		String id = request.getParameter("id");
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml"); 
+		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		memberVO = mapper.memberInfo(id);
+		model.addAttribute("memberVO", memberVO);
+		return "memberInfo";
+	}
+	
+	@RequestMapping("/profileUpload")
+	public String profileUpload (MultipartHttpServletRequest request, Model model) {
+		String id = request.getParameter("id");
+		File file = new File("/tempfiles");
+		Iterator<String> iterator = request.getFileNames();
+		if (!file.exists()) {
+			file.mkdir();
+		}
+		ArrayList<String> list = new ArrayList<String>();
+		while (iterator.hasNext()) {
+			String uploadFileName = iterator.next();
+			MultipartFile multipartFile = request.getFile(uploadFileName);
+			String originFileName = multipartFile.getOriginalFilename();
+			if (originFileName != null || originFileName.trim().length() != 0) {
+				try {
+					multipartFile.transferTo(new File(file + File.separator + id));
+					logger.info("{} 파일 업로드 완료", originFileName );
+				} catch (IllegalStateException | IOException e) {
+					logger.info("파일 업로드 에러");
+				}
+			}
+		}
+		
+		return "profileUpload";
 	}
 	
 	@RequestMapping("/increment")
@@ -597,6 +647,25 @@ public class HomeController {
 		
 		return "registerProcess";
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/memberSignOut", produces = "application/text;charset=utf-8")
+	public String memberSignOut( HttpServletRequest request, Model model) {
+		String id = request.getParameter("id");
+		System.out.println("memberSignOut -> id -> "+ id);
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		int coincideCheck = mapper.coincideCheck(id);
+		if ( coincideCheck == 1) {
+//			mapper.deleteAccount(id);
+			String json = "{\"processResult\" : \"1\"}";
+			return json;
+		} else {
+			String error = "error";
+			return error;
+		}
+	}
+	
+	
 	
 	@RequestMapping("/write")
 	public String write(HttpServletRequest request, Model model) {

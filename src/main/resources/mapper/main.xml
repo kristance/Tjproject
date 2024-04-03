@@ -27,6 +27,22 @@
 		insert into register(id, pw, name, nick, email) values (#{id}, #{pw}, #{name}, #{nick}, #{email})
 	</insert>
 	
+	<!-- member info -->
+	<select id="memberInfo" parameterType="java.lang.String" resultType="com.tjoeun.Tjproject.vo.MemberVO">
+		select * from register where id = #{id}
+	</select>
+	
+	<!-- delete - coincide Check -->
+	<select id="coincideCheck" parameterType="java.lang.String" resultType="int">
+		select count(*) from register where id = #{id}
+	</select>
+	
+	<!-- member delete -->
+	<delete id="deleteAccount" parameterType="java.lang.String" >
+		delete from register where id = #{id}
+	</delete>
+	
+	
 	<!-- 조회수를 증가시킨다. -->
 	<update id="increment" parameterType="int">
 		update main set hit = hit + 1 where idx = #{idx} and deleted = 'no'

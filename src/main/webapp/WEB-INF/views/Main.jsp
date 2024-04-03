@@ -176,7 +176,7 @@
 								
 								<!-- 작가 id -->
 								<td class="align-middle text-center">
-									${vo.id}
+									<a href="memberInfo?id=${vo.id}" style="text-decoration: none; cursor: pointer;">${vo.id}</a>
 								</td>
 								<!-- 조회수-->
 								<td class="align-middle text-center">

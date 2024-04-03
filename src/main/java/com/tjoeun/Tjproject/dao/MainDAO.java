@@ -72,6 +72,15 @@ public interface MainDAO {
 //	save -> article
 	void insert(MainVO mainVO);
 
+//	memberInfo
+	MemberVO memberInfo(String id);
+
+//	삭제할 대상 확인
+	int coincideCheck(String id);
+
+//	delete Account
+	void deleteAccount(String id);
+
 
 
 	
