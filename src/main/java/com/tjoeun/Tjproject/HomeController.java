@@ -14,6 +14,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.tjoeun.Tjproject.dao.MainCommentDAO;
@@ -61,6 +62,7 @@ public class HomeController {
 		session.setAttribute("selectNew", selectNew);
 		
 		String autoLogin = "";
+		String autoLoginCheck = "";
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie c : cookies) {
@@ -68,20 +70,27 @@ public class HomeController {
 				String value = c.getValue();
 				if (name.equalsIgnoreCase("autoLogin")) {
 					autoLogin = value;
+				} else if (name.equalsIgnoreCase("autoLoginCheck")) {
+					autoLoginCheck = value;
 				}
 			}
 		}
 		System.out.println("autoLogin -> " + autoLogin);
-		if (autoLogin != null || autoLogin.trim().length() != 0) {
+		if (autoLoginCheck.trim().equalsIgnoreCase("on") &&
+										autoLogin != null &&
+										autoLogin.trim().length() != 0) {
 			session.setAttribute("loginCheck", 1);
 			session.setAttribute("loginInfoID", autoLogin);
-			
 		}
+		
+			
 		
 		
 		
 		return "redirect:list";
 	}
+	
+	
 	@RequestMapping("/list")
 	public String list (HttpServletRequest request, Model model) {
 		int currentPage = 1;
