@@ -1,16 +1,30 @@
-window.addEventListener('load', function () {
-//	alert(document.cookie + "  <- 123.js");
+window.addEventListener('load',  () => {
+	
+	//alert(document.cookie)
 	let cookie = document.cookie;
-	let firstPeriod = cookie.indexOf('saveID');
-	let secondPeriod = cookie.indexOf(';', firstPeriod);
-	let thirdPeriod = cookie.substring(firstPeriod, secondPeriod);
-	let fourthPeriod = thirdPeriod.split('=');
-//	let value = fourthPeriod[2];
 	
 	
-	if (secondPeriod == -1) {
-		secondPeriod = cookie.length
-	}
-	alert(fourthPeriod);
 		
-})
+		let firstPeriod = cookie.indexOf('saveID');
+		
+		let secondPeriod = cookie.length;
+		try {
+			secondPeriod = cookie.indexOf(';', firstPeriod);
+			
+		} catch (error) {
+			
+		}
+		let	thirdPeriod = cookie.substring(firstPeriod, secondPeriod);
+		let	fourthPeriod = thirdPeriod.split('=');
+		let	value = fourthPeriod[1];
+		
+	//	alert(value);
+		
+		if (value != null || value != '') {
+			document.querySelector('#id').value = value;
+			document.querySelector('#saveID').setAttribute('checked', 'checked');
+		}
+		
+		
+		
+	})

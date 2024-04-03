@@ -2,6 +2,7 @@ package com.tjoeun.Tjproject;
 
 import java.util.HashMap;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -59,6 +60,26 @@ public class HomeController {
 		session.setAttribute("selectGood", selectGood);
 		session.setAttribute("selectNew", selectNew);
 		
+		String autoLogin = "";
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {
+			for (Cookie c : cookies) {
+				String name = c.getName();
+				String value = c.getValue();
+				if (name.equalsIgnoreCase("autoLogin")) {
+					autoLogin = value;
+				}
+			}
+		}
+		System.out.println("autoLogin -> " + autoLogin);
+		if (autoLogin != null || autoLogin.trim().length() != 0) {
+			session.setAttribute("loginCheck", 1);
+			session.setAttribute("loginInfoID", autoLogin);
+			
+		}
+		
+		
+		
 		return "redirect:list";
 	}
 	@RequestMapping("/list")
@@ -81,6 +102,7 @@ public class HomeController {
 		model.addAttribute("currentPage", currentPage);
 		session.setAttribute("mainList", mainList);
 		session.setAttribute("currentPage", currentPage);
+		
 		
 		return "Main";
 	}
@@ -194,7 +216,6 @@ public class HomeController {
 		}
 		
 		
-		
 		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
 		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
 		memberVO.setId(id);
@@ -204,6 +225,8 @@ public class HomeController {
 		
 		int loginCheck = service.login(memberVO, mapper);
 			
+		model.addAttribute("id", id);
+		model.addAttribute("pw", password);
 		model.addAttribute("loginCheck", loginCheck);
 		model.addAttribute("memberVO", memberVO);
 		model.addAttribute("backPage", backPage);
