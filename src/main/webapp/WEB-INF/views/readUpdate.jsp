@@ -55,7 +55,7 @@
 	
 	
 		<div class="container bg-light">
-			<form action="selectByIdx.jsp" method="post">
+			<form action="./selectByIdx" method="post">
 				<div class="row justify-content-center">
 				
 				<div class="col-lg-2 bg-light justify-content-center align-items-center">

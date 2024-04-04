@@ -18,24 +18,46 @@
 	String password = vo.getPw();
 	String encodedId = URLEncoder.encode(id, "UTF-8");
 	int loginCheck = (int) request.getAttribute("loginCheck");
+	String saveID = request.getParameter("saveID");
+	String autoLogin = request.getParameter("autoLogin");
 	int backPage = (int) request.getAttribute("backPage");
-	
 	
 	out.println("<script>");
 	if (loginCheck != 1) {
 		out.println("alert('로그인 불가')");
-		out.println("location.href='./login?backPage=" + backPage +"'");
+		out.println("location.href='./login'");
 	} else {
-		session.setAttribute("loginInfoID", id);
-		session.setAttribute("loginInfoPW", password);
-		session.setAttribute("loginCheck", loginCheck);
-		Cookie cookie = new Cookie("saveID", encodedId);
-		cookie.setMaxAge(100000);
-		response.addCookie(cookie);
-		
-		out.println(backPage);
-		out.println("alert('로그인 성공')");
-//		out.println("alert('"+ backPage +"')");
+		if (saveID != null && autoLogin != null) {
+			session.setAttribute("loginInfoID", id);
+			session.setAttribute("loginCheck", loginCheck);
+			Cookie cookie = new Cookie("saveID", encodedId);
+			cookie.setMaxAge(100000);
+			response.addCookie(cookie);
+			Cookie cookie2 = new Cookie("autoLogin", encodedId);
+			Cookie cookie3 = new Cookie("autoLoginCheck", "on");
+			cookie2.setMaxAge(100000);
+			response.addCookie(cookie2);
+			cookie3.setMaxAge(100000);
+			response.addCookie(cookie3);
+			out.println("alert('로그인 성공 - 1')");
+		} else if (saveID != null) {
+			session.setAttribute("loginInfoID", id);
+			session.setAttribute("loginCheck", loginCheck);
+			Cookie cookie = new Cookie("saveID", encodedId);
+			Cookie cookie2 = new Cookie("autoLoginCheck", "off");
+			cookie.setMaxAge(100000);
+			response.addCookie(cookie);
+			cookie2.setMaxAge(100000);
+			response.addCookie(cookie2);
+			out.println("alert('로그인 성공 - 2')");
+	//		out.println("alert('"+ backPage +"')");
+		} else {
+			session.setAttribute("loginInfoID", id);
+			session.setAttribute("loginCheck", loginCheck);
+			out.println("alert('로그인 성공 - 3')");
+	//		out.println("alert('"+ backPage +"')");
+		}
+
 
 		if (backPage == 3) {
 			int idx;
