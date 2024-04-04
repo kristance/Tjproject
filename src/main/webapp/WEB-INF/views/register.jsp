@@ -80,7 +80,7 @@
 								</th>
 								<td class="register align-middle"><input id="id"
 									class="form-control form-control-sm" type="text" name="id"
-									placeholder="아이디를 입력하세요" autocomplete="off" maxlength="20" /></td>
+									placeholder="아이디를 입력하세요" autocomplete="off" maxlength="20" pattern="[A-Za-z0-9]" title="영문자와 숫자조합으로 입력해주세요." /></td>
 							</tr>
 							<tr class="register">
 								<th class="register align-middle table-light">

@@ -46,13 +46,13 @@ function memberInfoUpdateComplete() {
         return result.text()
     })
     .then( (text) => {
-        //console.log("result ->" + text)
-        if (text == 1) {
+        console.log("result ->" + text)
+        if (text >= 1) {
             alert("수정되었습니다.")
             location.href="./memberInfo?id=" + memberInfoId
         } else {
             alert("수정에 실패하였습니다.")
-            history.go(-1)
+            history.go(-2)
         }
     })
     .catch ((error) => {
