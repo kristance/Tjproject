@@ -82,11 +82,12 @@
 					</form>
 				</div><hr/>
 				
+				<form id="categoryOptionValueSubmit" action="categorySort">
 				<div id="div2_2">카테고리 검색
 						<select id="category" 
 	                  class="form-control form-control-sm" 
 	                  style="width: 100%; text-align: center;"
-	                  onchange="categorySearch()"> 
+	                  onchange="categorySortFn()"> 
 							<option>장르</option>
 							<option value="공포">공포</option>
 							<option value="스릴러">스릴러</option>
@@ -97,9 +98,12 @@
 							<option value="판타지">판타지</option>
 							<option value="무협">무협</option>
 						</select>
+						
+						<input id="categoryOptionValue" name="categoryOptionValue" type="text" style="visibility: hidden;">
+						<input  type="submit" style="visibility: hidden;">
 				</div><hr/>
+			</form>
 			</div>
-			
 	
 			<div id="div3" class="col-lg-8">
 				<div class="d-flex align-items-center justify-content-center">

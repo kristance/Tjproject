@@ -43,3 +43,12 @@ window.addEventListener('load',  () => {
 		
 		
 	})
+	
+function categorySortFn() {
+		let category = document.querySelector('#category')
+		let categorySelectedValue = category.options[category.selectedIndex].text;
+		console.log('categoryvalue -> ' + categorySelectedValue)
+		document.querySelector('#categoryOptionValue').value = categorySelectedValue;
+		document.querySelector('#categoryOptionValueSubmit').submit();
+	
+}
