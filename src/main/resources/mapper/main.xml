@@ -85,6 +85,11 @@
 		]]>
 	</select>
 	
+	<!-- 메인 글 수정  -->
+	<update id="update" parameterType="com.tjoeun.Tjproject.vo.MainVO">
+		update main set subject = #{subject}, content = #{content}, category = #{category}
+	</update>
+	
 	<!-- 메인 글 1건 삭제 -->
 	<update id="delete" parameterType="int">
 		update main set deleted = 'yes', hit = -1000000, good = -1000000, category = '삭제' where idx = #{idx} and deleted = 'no'

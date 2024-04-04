@@ -24,7 +24,7 @@
 		<nav class="navbar navbar-light bg-light static-top justify-content-center">
 			<div class="row">
 				<div class="col-lg-2 d-flex align-items-center justify-content-center">
-					<input class="btn btn-warning" type="button" value="Main으로" onclick="location.href='list.jsp'"
+					<input class="btn btn-warning" type="button" value="Main으로" onclick="location.href='list'"
 						style="width: 100%; height: 100%; max-height: 5em;"/>
 				</div>
 		
@@ -76,7 +76,7 @@
 						<input class="btn btn-primary btn-sm" type="submit" value="수정 완료"
 							style="width: 100%; height: 80%;"/>
 						<input class="btn btn-secondary btn-sm" type="button" value="수정 취소" style="width: 100%; height: 80%;"
-							onclick="location.href='selectByIdx.jsp?idx=${mainvo.idx}&currentPage=${currentPage}'"/>
+							onclick="location.href='selectByIdx?idx=${mainvo.idx}&currentPage=${currentPage}'"/>
 					</div><hr/>
 				</div>
 				
