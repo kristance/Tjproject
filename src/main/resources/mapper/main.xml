@@ -42,6 +42,10 @@
 		delete from register where id = #{id}
 	</delete>
 	
+	<!-- memberInfo update -->
+	<update id="updateInfo" parameterType="com.tjoeun.Tjproject.vo.MemberVO">
+		update register set name = #{name}, nick = #{nick}, email = #{email}  
+	</update>
 	
 	<!-- 조회수를 증가시킨다. -->
 	<update id="increment" parameterType="int">

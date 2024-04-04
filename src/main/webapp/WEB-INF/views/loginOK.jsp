@@ -54,7 +54,7 @@
 		} else {
 			session.setAttribute("loginInfoID", id);
 			session.setAttribute("loginCheck", loginCheck);
-			out.println("alert('로그인 성공' - 3)");
+			out.println("alert('로그인 성공 - 3')");
 	//		out.println("alert('"+ backPage +"')");
 		}
 

@@ -81,6 +81,9 @@ public interface MainDAO {
 //	delete Account
 	void deleteAccount(String id);
 
+//	memberInfo update
+	int updateInfo(MemberVO memberVO);
+
 
 
 	

@@ -67,8 +67,8 @@
 						<hr/>
 					<div id="div2_2" align="center">
 						<c:if test="${loginCheck == 1 }">
-							<button class="btn btn-primary memberInfoRewriteBtn" type="button" onclick="location.href='./memberInfoModify?id=${memberVO.id}'">회원 정보 수정</button>
-							<button class="btn btn-danger signOutBtn" type="button" onclick="memberSignOut(${memberVO.id})">회원 탈퇴</button>
+							<button class="btn btn-primary memberInfoRewriteBtn" type="button" onclick="memberInfoUpdateComplete()">수정 완료</button>
+							<button class="btn btn-danger signOutBtn" type="button" onclick="location.href='history.go(-1)'">수정 취소</button>
 						</c:if>
 						
 					</div>
@@ -92,19 +92,22 @@
 						</tr>
 						<tr style="height: 5em;">
 							<th style="width: 15%"><h5><b>ID</b></h5></th>
-							<td style="width: 85%"><h5>${memberVO.id}</h5></td>
+							<td style="width: 85%">
+								${memberVO.id}
+								<input id="memberInfoId" type="hidden" value="${memberVO.id }">
+							</td>
 						</tr>
 						<tr style="height: 5em;">
 							<th><h5><b>이름</b></h5></th>
-							<td><h5>${memberVO.name}</h5></td>
+							<td><input id="updateName" class="form-control" type="text" value="${memberVO.name }"> </td>
 						</tr>
 						<tr style="height: 5em;">
 							<th><h5><b>닉네임</b></h5></th>
-							<td><h5>${memberVO.nick}</h5></td>
+							<td><input id="updateNick" class="form-control" type="text" value="${memberVO.nick }"> </td>
 						</tr>
 						<tr style="height: 5em;">
 							<th><h5><b>이메일</b></h5></th>
-							<td><h5>${memberVO.email}</h5></td>
+							<td><input id="updateEmail" class="form-control" type="text" value="${memberVO.email }"> </td>
 						</tr>
 						<tr style="height: 5em;">
 						</tr>

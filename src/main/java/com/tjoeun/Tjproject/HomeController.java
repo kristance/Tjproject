@@ -3,6 +3,7 @@ package com.tjoeun.Tjproject;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -259,42 +260,6 @@ public class HomeController {
 		return "loginOK";
 	}
 	
-	@RequestMapping("/memberInfo")
-	public String memberInfo(HttpServletRequest request, Model model) {
-		String id = request.getParameter("id");
-		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml"); 
-		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
-		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
-		memberVO = mapper.memberInfo(id);
-		model.addAttribute("memberVO", memberVO);
-		return "memberInfo";
-	}
-	
-	@RequestMapping("/profileUpload")
-	public String profileUpload (MultipartHttpServletRequest request, Model model) {
-		String id = request.getParameter("id");
-		File file = new File("/tempfiles");
-		Iterator<String> iterator = request.getFileNames();
-		if (!file.exists()) {
-			file.mkdir();
-		}
-		ArrayList<String> list = new ArrayList<String>();
-		while (iterator.hasNext()) {
-			String uploadFileName = iterator.next();
-			MultipartFile multipartFile = request.getFile(uploadFileName);
-			String originFileName = multipartFile.getOriginalFilename();
-			if (originFileName != null || originFileName.trim().length() != 0) {
-				try {
-					multipartFile.transferTo(new File(file + File.separator + id));
-					logger.info("{} 파일 업로드 완료", originFileName );
-				} catch (IllegalStateException | IOException e) {
-					logger.info("파일 업로드 에러");
-				}
-			}
-		}
-		
-		return "profileUpload";
-	}
 	
 	@RequestMapping("/increment")
 	public String increment (HttpServletRequest request, Model model) {
@@ -315,6 +280,25 @@ public class HomeController {
 		
 	}
 	
+	@RequestMapping("/readUpdate") 
+	public String readUpdate (HttpServletRequest request, Model model){
+		int idx = Integer.parseInt( request.getParameter("idx"));
+		int currentPage = 1;
+		try {
+			currentPage = Integer.parseInt( request.getParameter("currentPage"));
+		} catch (Exception e) {
+		}
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml");
+		MainVO mainVO = ctx.getBean("mainVO", MainVO.class);
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		mainVO = mapper.selectByIdx(idx);
+		model.addAttribute("Mainboard", mainVO);
+		model.addAttribute("currentPage", currentPage);
+		
+		return "readUpdate";
+	}
+	
+	
 	@RequestMapping("/selectByIdx")
 	public String selectByIdx (HttpServletRequest request, Model model, MainVO mainVO, MainCommentVO co) {
 		logger.info("homecontroller -> selectByIdx()");
@@ -323,6 +307,9 @@ public class HomeController {
 		int currentPage = Integer.parseInt(request.getParameter("currentPage"));
 		int idx = Integer.parseInt(request.getParameter("idx"));
 		logger.info("selectByIdx -> idx -> {}", idx);
+		String subject = request.getParameter("subject");
+		String category = request.getParameter("category");
+		String content = request.getParameter("content");
 		
 		try {
 			idx = (int) request.getAttribute("idx");
@@ -365,7 +352,7 @@ public class HomeController {
 				model.addAttribute("Mainboard", vo);
 				return "read";
 				
-			} else if(job != null && job.equals("updateOK")) {
+			} else if(job != null && job.equals("update")) {
 				model.addAttribute("errorCheck", 1110);
 //				pressed Update complete button
 					if (mainVO.getCategory() != null || !mainVO.getCategory().equals("카테고리 입력")) {
@@ -389,6 +376,9 @@ public class HomeController {
 						model.addAttribute("errorCheck", 1114);
 						model.addAttribute("idx", idx);
 						model.addAttribute("currentPage", currentPage);
+						mainVO.setCategory(category);
+						mainVO.setSubject(subject);
+						mainVO.setContent(content);
 						service.update(mainVO, mapper);
 						return "selectByIdx";
 					}
@@ -648,6 +638,18 @@ public class HomeController {
 		return "registerProcess";
 	}
 	
+	@RequestMapping("/memberInfo")
+	public String memberInfo(HttpServletRequest request, Model model) {
+		String id = request.getParameter("id");
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml"); 
+		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		memberVO = mapper.memberInfo(id);
+		model.addAttribute("memberVO", memberVO);
+		return "memberInfo";
+	}
+	
+	
 	@ResponseBody
 	@RequestMapping(value = "/memberSignOut", produces = "application/text;charset=utf-8")
 	public String memberSignOut( HttpServletRequest request, Model model) {
@@ -665,6 +667,42 @@ public class HomeController {
 		}
 	}
 	
+	
+	@RequestMapping("/memberInfoModify")
+	public String memberInfoModify(HttpServletRequest request, Model model) {
+		String id = request.getParameter("id");
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml"); 
+		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		memberVO = mapper.memberInfo(id);
+		model.addAttribute("memberVO", memberVO);
+		
+		return "memberInfoModify";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/memberInfoUpdate", produces = "application/text;charset=utf-8")
+	public String memberInfoUpdate(HttpServletRequest request, Model model) throws UnsupportedEncodingException {
+		System.out.println("memberInfoUpdate -> " + request.getParameter("name"));
+		String name = request.getParameter("name");
+		String nick = request.getParameter("nick");
+		String email = request.getParameter("email");
+		String decodeName = URLDecoder.decode( name, "UTF-8");
+		String decodeNick = URLDecoder.decode( nick, "UTF-8");
+		String decodeEmail = URLDecoder.decode( email, "UTF-8");
+		System.out.println(decodeName + " " + decodeNick + " " + decodeEmail);
+		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml"); 
+		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
+		memberVO.setName(decodeName);
+		memberVO.setNick(decodeNick);
+		memberVO.setEmail(decodeEmail);
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		int processValue = mapper.updateInfo(memberVO);
+		System.out.println("processValue -> " + processValue);
+		
+		
+		return processValue + "";
+	}
 	
 	
 	@RequestMapping("/write")
