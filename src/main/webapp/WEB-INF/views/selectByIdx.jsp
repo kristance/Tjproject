@@ -23,37 +23,39 @@
 	int currentPage = Integer.parseInt( request.getParameter("currentPage") );
 	MainVO mainVO = (MainVO) request.getAttribute("vo");
 	MainCommentVO co = (MainCommentVO) request.getAttribute("commentList");
-	int errorCheck = 1110;
+	int errorCheckFirst = 1110;
+	int errorCheck = 1111;
 	try {
+		errorCheckFirst = (int) request.getAttribute("errorCheckFirst");
 		errorCheck = (int) request.getAttribute("errorCheck");
 	} catch (Exception e) {
 		
 	}
+//	out.println(errorCheck);
+//	out.println(errorCheckFirst);
 	
-	
-if(errorCheck == 1110) {
+if(errorCheckFirst == 1110) {
 	if (errorCheck == 1111) {
 		out.println("<script>");
 		out.println("alert('카테고리를 입력하세요')");
 		out.println("location.href='./readUpdate?idx=" + idx + "&currentPage=" + currentPage + "'");
-		
+		out.println("</script>");
 	} else if (errorCheck == 1112) {
 		out.println("<script>");
 		out.println("alert('제목을 입력하세요')");
 		out.println("location.href='./readUpdate?idx=" + idx + "&currentPage=" + currentPage + "'");
-		
+		out.println("</script>");
 	} else if (errorCheck == 1113) {
 		out.println("<script>");
 		out.println("alert('내용을 입력하세요')");
 		out.println("location.href='./readUpdate?idx=" + idx + "&currentPage=" + currentPage + "'");
-		
+		out.println("</script>");
 	} else if (errorCheck == 1114){
 		out.println("<script>");
 		out.println("alert('정상적으로 수정되었습니다')");
 		out.println("location.href='./selectByIdx?idx=" + idx + "&currentPage=" + currentPage + "'");
-		
+		out.println("</script>");
 	}
-	out.println("</script>");
 }
 
 

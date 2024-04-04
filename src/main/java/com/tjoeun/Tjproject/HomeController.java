@@ -310,6 +310,7 @@ public class HomeController {
 		String subject = request.getParameter("subject");
 		String category = request.getParameter("category");
 		String content = request.getParameter("content");
+		logger.info("subject -> {}, content -> {}", subject, content);
 		
 		try {
 			idx = (int) request.getAttribute("idx");
@@ -326,6 +327,10 @@ public class HomeController {
 		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
 		MainCommentDAO mapperComment = sqlSession.getMapper(MainCommentDAO.class);
 		MainVO vo = service.selectByIdx(idx, mapper);
+		logger.info("mainVO -> {}, vo -> {}", mainVO, vo);
+		mainVO.setCategory(category);
+		mainVO.setSubject(subject);
+		mainVO.setContent(content);
 		HttpSession session = request.getSession();
 		logger.info("selectByidx -> mainVO {}",vo);
 		logger.info("selectByidx -> job -> {}",job);
@@ -340,6 +345,7 @@ public class HomeController {
 //				pressed update main button
 				model.addAttribute("idx", idx);
 				model.addAttribute("currentPage", currentPage);
+				System.out.println("1");
 				return "redirect:readUpdate";
 			} else if(job != null && job.equals("good")) {
 //				pressed recommend button
@@ -352,33 +358,35 @@ public class HomeController {
 				model.addAttribute("Mainboard", vo);
 				return "read";
 				
-			} else if(job != null && job.equals("update")) {
-				model.addAttribute("errorCheck", 1110);
+			} else if(job != null && job.equals("updateOK")) {
+				model.addAttribute("errorCheckFirst", 1110);
 //				pressed Update complete button
-					if (mainVO.getCategory() != null || !mainVO.getCategory().equals("카테고리 입력")) {
+					if (mainVO.getCategory() == null || mainVO.getCategory().equals("카테고리 입력")) {
 						model.addAttribute("errorCheck", 1111);
 						model.addAttribute("idx", idx);
 						model.addAttribute("currentPage", currentPage);
-						return "readUpdate";
-					} else if (mainVO.getSubject() != null || !mainVO.getSubject().trim().equals("") ) {
+						System.out.println("2");
+						return "selectByIdx";
+					} else if (mainVO.getSubject() == null || mainVO.getSubject().trim().equals("") ) {
 						model.addAttribute("errorCheck", 1112);
 						model.addAttribute("idx", idx);
 						model.addAttribute("currentPage", currentPage);
 						model.addAttribute("idx", idx);
 						model.addAttribute("currentPage", currentPage);
-						return "readUpdate";
-					} else if (mainVO.getContent() != null || !mainVO.getContent().trim().equals("") ) {
+						System.out.println("3");
+						return "selectByIdx";
+					} else if (mainVO.getContent() == null || mainVO.getContent().trim().equals("") ) {
 						model.addAttribute("errorCheck", 1113);
 						model.addAttribute("idx", idx);
 						model.addAttribute("currentPage", currentPage);
-						return "readUpdate";
+						System.out.println("4");
+						return "selectByIdx";
 					}else {
 						model.addAttribute("errorCheck", 1114);
 						model.addAttribute("idx", idx);
 						model.addAttribute("currentPage", currentPage);
-						mainVO.setCategory(category);
-						mainVO.setSubject(subject);
-						mainVO.setContent(content);
+						logger.info("##selectByIdx -> mainVO -> {}", mainVO.toString());
+						System.out.println("5");
 						service.update(mainVO, mapper);
 						return "selectByIdx";
 					}
