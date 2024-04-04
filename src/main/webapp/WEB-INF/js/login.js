@@ -21,7 +21,7 @@ window.addEventListener('load',  () => {
 		if (value != null || value != '' && value != undefined) {
 			document.querySelector('#id').value = value;
 			document.querySelector('#saveID').setAttribute('checked', 'checked');
-		}
+		}	
 
 		let firstPeriodAutoLogin = cookie.indexOf("autoLogin");
 		let secondPeriodAutoLogin = cookie.indexOf(";", firstPeriodAutoL/ogin);

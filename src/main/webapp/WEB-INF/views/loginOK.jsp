@@ -31,13 +31,13 @@
 			session.setAttribute("loginInfoID", id);
 			session.setAttribute("loginCheck", loginCheck);
 			Cookie cookie = new Cookie("saveID", encodedId);
-			cookie.setMaxAge(100000);
-			response.addCookie(cookie);
 			Cookie cookie2 = new Cookie("autoLogin", encodedId);
 			Cookie cookie3 = new Cookie("autoLoginCheck", "on");
+			cookie.setMaxAge(100000);
 			cookie2.setMaxAge(100000);
-			response.addCookie(cookie2);
 			cookie3.setMaxAge(100000);
+			response.addCookie(cookie);
+			response.addCookie(cookie2);
 			response.addCookie(cookie3);
 			out.println("alert('로그인 성공 - 1')");
 		} else if (saveID != null) {
@@ -46,8 +46,8 @@
 			Cookie cookie = new Cookie("saveID", encodedId);
 			Cookie cookie2 = new Cookie("autoLoginCheck", "off");
 			cookie.setMaxAge(100000);
-			response.addCookie(cookie);
 			cookie2.setMaxAge(100000);
+			response.addCookie(cookie);
 			response.addCookie(cookie2);
 			out.println("alert('로그인 성공 - 2')");
 	//		out.println("alert('"+ backPage +"')");

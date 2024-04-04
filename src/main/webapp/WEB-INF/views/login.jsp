@@ -126,7 +126,7 @@
 										method="post">
 										<div class="form-group">
 											<input id="id" name="id" type="text" class="form-control rounded-left"
-												placeholder="id" required="required"><br/>
+												placeholder="id" required="required" pattern="[A-Za-z0-9]" title="영문자와 숫자 조합으로 입력해주세요."><br/>
 										</div>
 										<div class="form-group d-flex">
 											<input name="pw" type="password"
