@@ -21,7 +21,7 @@ window.addEventListener('load',  () => {
 		if (value != null || value != '' && value != undefined) {
 			document.querySelector('#id').value = value;
 			document.querySelector('#saveID').setAttribute('checked', 'checked');
-		}
+		}	
 
 		let firstPeriodAutoLogin = cookie.indexOf("autoLogin");
 		let secondPeriodAutoLogin = cookie.indexOf(";", firstPeriodAutoL/ogin);
@@ -43,3 +43,12 @@ window.addEventListener('load',  () => {
 		
 		
 	})
+	
+function categorySortFn() {
+		let category = document.querySelector('#category')
+		let categorySelectedValue = category.options[category.selectedIndex].text;
+		console.log('categoryvalue -> ' + categorySelectedValue)
+		document.querySelector('#categoryOptionValue').value = categorySelectedValue;
+		document.querySelector('#categoryOptionValueSubmit').submit();
+	
+}

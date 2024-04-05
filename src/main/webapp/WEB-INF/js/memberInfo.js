@@ -38,6 +38,7 @@ function memberSignOut(id) {
 //     const payload = new URLSearchParams(formData)
 //     console.log(payload)
 
+<<<<<<< HEAD
 //     fetch ("./memberInfoUpdate", {
 //         method : "POST",
 //         headers : {
@@ -60,6 +61,30 @@ function memberSignOut(id) {
 //     .catch ((error) => {
 //         // console.log(error)
 //     })
+=======
+    fetch ("./memberInfoUpdate", {
+        method : "POST",
+        headers : {
+            "Content-Type" : "application/x-www-form-urlencoded"},
+        body : payload
+    })
+    .then ( (result) => {
+        return result.text()
+    })
+    .then( (text) => {
+        console.log("result ->" + text)
+        if (text >= 1) {
+            alert("수정되었습니다.")
+            location.href="./memberInfo?id=" + memberInfoId
+        } else {
+            alert("수정에 실패하였습니다.")
+            history.go(-2)
+        }
+    })
+    .catch ((error) => {
+        // console.log(error)
+    })
+>>>>>>> 57289a97fa14786f80727ff73179416d151a7025
 
 // }
 
