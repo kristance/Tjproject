@@ -22,42 +22,44 @@ function memberSignOut(id) {
     }
 
 
-function memberInfoUpdateComplete() {
-    let memberInfoId = document.querySelector('#memberInfoId').value;
-    let updateName = document.querySelector('#updateName').value;
-    let updateNick = document.querySelector('#updateNick').value;
-    let updateEmail = document.querySelector('#updateEmail').value;
-    const formData = new FormData();
-    formData.append("name", encodeURIComponent(updateName))
-    formData.append("nick", encodeURIComponent(updateNick))
-    formData.append("email", encodeURIComponent(updateEmail))
-    console.log(memberInfoId)
+
+// function memberInfoUpdateComplete() {
+//     let memberInfoId = document.querySelector('#memberInfoId').value;
+//     let updateName = document.querySelector('#updateName').value;
+//     let updateNick = document.querySelector('#updateNick').value;
+//     let updateEmail = document.querySelector('#updateEmail').value;
+//     const formData = new FormData();
+//     formData.append("image", imageUpload.files[0])
+//     formData.append("name", encodeURIComponent(updateName))
+//     formData.append("nick", encodeURIComponent(updateNick))
+//     formData.append("email", encodeURIComponent(updateEmail))
+//     console.log(memberInfoId)
     
-    const payload = new URLSearchParams(formData)
-    console.log(payload)
+//     const payload = new URLSearchParams(formData)
+//     console.log(payload)
 
-    fetch ("./memberInfoUpdate", {
-        method : "POST",
-        headers : {
-            "Content-Type" : "application/x-www-form-urlencoded"},
-        body : payload
-    })
-    .then ( (result) => {
-        return result.text()
-    })
-    .then( (text) => {
-        //console.log("result ->" + text)
-        if (text == 1) {
-            alert("수정되었습니다.")
-            location.href="./memberInfo?id=" + memberInfoId
-        } else {
-            alert("수정에 실패하였습니다.")
-            history.go(-1)
-        }
-    })
-    .catch ((error) => {
-        // console.log(error)
-    })
+//     fetch ("./memberInfoUpdate", {
+//         method : "POST",
+//         headers : {
+//             "Content-Type" : "application/x-www-form-urlencoded"},
+//         body : payload
+//     })
+//     .then ( (result) => {
+//         return result.text()
+//     })
+//     .then( (text) => {
+//         //console.log("result ->" + text)
+//         if (text >= 1) {
+//             alert("수정되었습니다.")
+//             location.href="./memberInfo?id=" + memberInfoId
+//         } else {
+//             alert("수정에 실패하였습니다.")
+//             history.go(-1)
+//         }
+//     })
+//     .catch ((error) => {
+//         // console.log(error)
+//     })
 
-}
+// }
 
