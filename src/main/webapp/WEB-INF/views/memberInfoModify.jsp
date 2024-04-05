@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<script type="text/javascript" src="./js/memberInfo.js" defer="defer"></script>
+<script type="text/javascript" src="./js/memberInfoModify.js" defer="defer"></script>
 <link rel="stylesheet" href="./css/read.css"/>
 
 </head>
@@ -60,7 +60,8 @@
 					<h4 align="center">정보 및 메뉴</h4><hr/>
 					
 					<div id="div2_1" class="d-flex flex-column justify-content-center align-items-center">
-						<div id="imageUpload" style="width: 200px; height: 300px; background-image: url('./images/defaultMember.jpg'); background-size: cover;" >
+						<div id="imageUpload" >
+							<img id = "imageTag" src="./images/defaultMember.jpg"  style="background-size: cover; width: 210px; height: 300px; object-fit:contain">
 						</div>
 					<br/>
 					</div>
@@ -69,8 +70,10 @@
 			<form id="formMemberInfoUpdate" action="memberInfoUpdate" method="POST" enctype="multipart/form-data">
 					<div id="div2_2" align="center">
 						<c:if test="${loginCheck == 1 }">
-							<button class="btn btn-primary memberInfoRewriteBtn" type="submit" >수정 완료</button>
-							<button class="btn btn-danger signOutBtn" type="button" onclick="location.href='history.go(-1)'">수정 취소</button>
+							<button type="button" class="btn btn-secondary" onclick="uploadBtnClick()">프로필 사진 업로드</button>
+							<input type="file" name="uploadFile" id="uploadFile" class="form-control" style="display: none;" accept="image/*">
+							<button class="btn btn-primary memberInfoRewriteBtn" type="submit" style="width: 150px" >수정 완료</button>
+							<button class="btn btn-danger signOutBtn" style="width: 150px" type="button" onclick="location.href='history.go(-1)'">수정 취소</button>
 						</c:if>
 						
 					</div>

@@ -60,7 +60,8 @@
 					<h4 align="center">정보 및 메뉴</h4><hr/>
 					
 					<div id="div2_1" class="d-flex flex-column justify-content-center align-items-center">
-						<div style="width: 200px; height: 300px; background-image: url('./images/defaultMember.jpg'); background-size: cover;" >
+						<div id="imageUpload" >
+							<img id = "imageTag" src="./images/defaultMember.jpg"  style="background-size: cover; width: 210px; height: 300px; object-fit:contain">
 						</div>
 					<br/>
 					</div>
@@ -92,7 +93,10 @@
 						</tr>
 						<tr style="height: 5em;">
 							<th style="width: 15%"><h5><b>ID</b></h5></th>
-							<td style="width: 85%"><h5>${memberVO.id}</h5></td>
+							<td style="width: 85%"><h5>
+							${memberVO.id}
+							<input id="memberInfoID" type="hidden" value="${memberVO.id }">
+							</h5></td>
 						</tr>
 						<tr style="height: 5em;">
 							<th><h5><b>이름</b></h5></th>
