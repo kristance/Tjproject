@@ -688,30 +688,50 @@ public class HomeController {
 		return "memberInfoModify";
 	}
 	
-	@ResponseBody
-	@RequestMapping(value = "/memberInfoUpdate", produces = "application/text;charset=utf-8")
-	public String memberInfoUpdate(HttpServletRequest request, Model model) throws UnsupportedEncodingException {
-		System.out.println("memberInfoUpdate -> " + request.getParameter("name"));
+//	@ResponseBody
+//	@RequestMapping(value = "/memberInfoUpdate", produces = "application/text;charset=utf-8")
+//	public String memberInfoUpdate(HttpServletRequest request, Model model) throws UnsupportedEncodingException {
+//		System.out.println("memberInfoUpdate -> " + request.getParameter("name"));
+//		String name = request.getParameter("name");
+//		String nick = request.getParameter("nick");
+//		String email = request.getParameter("email");
+//		
+//		String decodeName = URLDecoder.decode( name, "UTF-8");
+//		String decodeNick = URLDecoder.decode( nick, "UTF-8");
+//		String decodeEmail = URLDecoder.decode( email, "UTF-8");
+//		System.out.println(decodeName + " " + decodeNick + " " + decodeEmail);
+//		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml"); 
+//		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
+//		memberVO.setName(decodeName);
+//		memberVO.setNick(decodeNick);
+//		memberVO.setEmail(decodeEmail);
+//		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+//		int processValue = mapper.updateInfo(memberVO);
+//		System.out.println("processValue -> " + processValue);
+//		
+//		
+//		return processValue + "" ;
+//	}
+	
+	@RequestMapping("/memberInfoUpdate")
+	public String memberInfoUpdate (HttpServletRequest request, Model model) {
+		String id = request.getParameter("id");
 		String name = request.getParameter("name");
 		String nick = request.getParameter("nick");
 		String email = request.getParameter("email");
-		String decodeName = URLDecoder.decode( name, "UTF-8");
-		String decodeNick = URLDecoder.decode( nick, "UTF-8");
-		String decodeEmail = URLDecoder.decode( email, "UTF-8");
-		System.out.println(decodeName + " " + decodeNick + " " + decodeEmail);
+		logger.info("memberInfoUpdate -> name -> {}, nick -> {}", name, nick);
 		AbstractApplicationContext ctx = new GenericXmlApplicationContext("classpath:/appCTX.xml"); 
 		MemberVO memberVO = ctx.getBean("memberVO", MemberVO.class);
-		memberVO.setName(decodeName);
-		memberVO.setNick(decodeNick);
-		memberVO.setEmail(decodeEmail);
+		memberVO.setName(name);
+		memberVO.setNick(nick);
+		memberVO.setEmail(email);
 		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
 		int processValue = mapper.updateInfo(memberVO);
-		System.out.println("processValue -> " + processValue);
-		
-		
-		return processValue + "";
+		logger.info("memberInfoUpdate -> processValue -> {}", processValue);
+		model.addAttribute("processValue", processValue);
+		model.addAttribute("id", id);
+		return "memberInfoModifylanding";
 	}
-	
 	
 	@RequestMapping("/write")
 	public String write(HttpServletRequest request, Model model) {

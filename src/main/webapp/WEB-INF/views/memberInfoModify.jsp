@@ -60,14 +60,16 @@
 					<h4 align="center">정보 및 메뉴</h4><hr/>
 					
 					<div id="div2_1" class="d-flex flex-column justify-content-center align-items-center">
-						<div style="width: 200px; height: 300px; background-image: url('./images/defaultMember.jpg'); background-size: cover;" >
+						<div id="imageUpload" style="width: 200px; height: 300px; background-image: url('./images/defaultMember.jpg'); background-size: cover;" >
 						</div>
 					<br/>
 					</div>
 						<hr/>
+			
+			<form id="formMemberInfoUpdate" action="memberInfoUpdate" method="POST" enctype="multipart/form-data">
 					<div id="div2_2" align="center">
 						<c:if test="${loginCheck == 1 }">
-							<button class="btn btn-primary memberInfoRewriteBtn" type="button" onclick="memberInfoUpdateComplete()">수정 완료</button>
+							<button class="btn btn-primary memberInfoRewriteBtn" type="submit" >수정 완료</button>
 							<button class="btn btn-danger signOutBtn" type="button" onclick="location.href='history.go(-1)'">수정 취소</button>
 						</c:if>
 						
@@ -94,25 +96,25 @@
 							<th style="width: 15%"><h5><b>ID</b></h5></th>
 							<td style="width: 85%">
 								${memberVO.id}
-								<input id="memberInfoId" type="hidden" value="${memberVO.id }">
+								<input name="id" id="memberInfoId" type="hidden" value="${memberVO.id }">
 							</td>
 						</tr>
 						<tr style="height: 5em;">
 							<th><h5><b>이름</b></h5></th>
-							<td><input id="updateName" class="form-control" type="text" value="${memberVO.name }"> </td>
+							<td><input id="updateName" name="name" class="form-control" type="text" value="${memberVO.name }"> </td>
 						</tr>
 						<tr style="height: 5em;">
 							<th><h5><b>닉네임</b></h5></th>
-							<td><input id="updateNick" class="form-control" type="text" value="${memberVO.nick }"> </td>
+							<td><input id="updateNick" name="nick" class="form-control" type="text" value="${memberVO.nick }"> </td>
 						</tr>
 						<tr style="height: 5em;">
 							<th><h5><b>이메일</b></h5></th>
-							<td><input id="updateEmail" class="form-control" type="text" value="${memberVO.email }"> </td>
+							<td><input id="updateEmail" name="email" class="form-control" type="text" value="${memberVO.email }"> </td>
 						</tr>
 						<tr style="height: 5em;">
 						</tr>
 					</table>
-						
+				</form>		
 					<div id="div5">
 						<!-- 댓글 입력 -->
 						<div id="div5_2">
