@@ -1,22 +1,3 @@
-window.addEventListener("load", () =>{
-    let profileImage = document.querySelector("#imageTag")
-    let memberInfoID = document.querySelector("#memberInfoID")
-    
-    fetch ("./profileImage?id=" + encodeURIComponent( memberInfoID ) , {
-        method : "GET",
-    })
-    .then ((result) => {
-        return result.text();
-    })
-    .then ((text) => {
-        console.log(text);
-    })
-})
-
-
-
-
-
 function memberSignOut(id) {
     let confirm1 = confirm("회원 탈퇴 하시겠습니까?",false)
     if (confirm1 == true) {
@@ -41,28 +22,28 @@ function memberSignOut(id) {
     }
 
 
-// let uploadFile = document.querySelector("#uploadFile")
-// let imageUpload = document.querySelector("#imageUpload")
-// let imageTag = document.querySelector("#imageTag")
-// uploadFile.addEventListener("change", (event) => {
-//     console.log(event)
-//     const imageaddress = URL.createObjectURL(event.target.files[0])
-//     // let imgTag = document.createElement("img")
-//     // imgTag.src = imageaddress;
-//     // imgTag.width = 200
-//     // imgTag.height = 100
-//     imageTag.src = imageaddress;
-//     imageTag.width = 210
-//     imageTag.height = 300
+let uploadFile = document.querySelector("#uploadFile")
+let imageUpload = document.querySelector("#imageUpload")
+let imageTag = document.querySelector("#imageTag")
+uploadFile.addEventListener("change", (event) => {
+    console.log(event)
+    const imageaddress = URL.createObjectURL(event.target.files[0])
+    // let imgTag = document.createElement("img")
+    // imgTag.src = imageaddress;
+    // imgTag.width = 200
+    // imgTag.height = 100
+    imageTag.src = imageaddress;
+    imageTag.width = 210
+    imageTag.height = 300
 
-//     // imageUpload.appendChild(imgTag)
-//     imgTag.onload = URL.revokeObjectURL(this.src)
-// })
+    // imageUpload.appendChild(imgTag)
+    imgTag.onload = URL.revokeObjectURL(this.src)
+})
 
-// function uploadBtnClick() {
-//     let uploadFile = document.querySelector("#uploadFile")
-//     uploadFile.click();
-// }
+function uploadBtnClick() {
+    let uploadFile = document.querySelector("#uploadFile")
+    uploadFile.click();
+}
 
 
 

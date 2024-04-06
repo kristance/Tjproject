@@ -177,4 +177,14 @@
 		insert into main(idx, gup, id, subject, category, content) values (main_idx_seq.nextval, main_idx_seq.currval, #{id}, #{subject}, #{category}, #{content})
 	</insert>
 	
+	<!-- save -> profile image name -->
+	<update id="saveMemberProfileImageName" parameterType="java.util.HashMap">
+		update register set profile = #{profile} where id = #{id}
+	</update>
+	
+	<!-- get profile image Name -->
+	<select id="getProfileImageName" parameterType="java.lang.String" resultType="java.lang.String">
+		select id,profile from register where id = #{id} 
+	</select>
+	
 </mapper>

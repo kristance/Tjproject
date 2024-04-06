@@ -714,7 +714,8 @@ public class HomeController {
 //	}
 	
 	@RequestMapping("/memberInfoUpdate")
-	public String memberInfoUpdate (HttpServletRequest request, Model model) {
+	public String memberInfoUpdate (MultipartHttpServletRequest file,
+			HttpServletRequest request, Model model) {
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
 		String nick = request.getParameter("nick");
@@ -730,8 +731,50 @@ public class HomeController {
 		logger.info("memberInfoUpdate -> processValue -> {}", processValue);
 		model.addAttribute("processValue", processValue);
 		model.addAttribute("id", id);
+		
+		File storage = new File("C:\\siteTemp\\" + id);
+		if (!storage.exists()) {
+			storage.mkdirs();
+		}
+		
+		Iterator<String> iterator = file.getFileNames();
+		while (iterator.hasNext()) {
+			String fileRealName = iterator.next();
+			MultipartFile multipartFile = file.getFile(fileRealName);
+			String originName = multipartFile.getOriginalFilename();
+			logger.info("iterator -> {}", file.getFileNames());
+			logger.info("fileRealName -> {}, originName -> {}", fileRealName, originName);
+		
+			if (originName != null || originName.trim().length() != 0) {
+					try {
+						multipartFile.transferTo(new File(storage +  "\\" + originName));
+						System.out.println("파일 업로드 성공");
+						HashMap<String, String> hmap = new HashMap<>();
+						hmap.put("profile", originName);
+						hmap.put("id", id);
+						System.out.println("hashmap -> " + hmap.toString());
+						mapper.saveMemberProfileImageName(hmap);
+					} catch (IllegalStateException | IOException e) {
+						System.out.println("문제가 생겨 파일 업로드에 실패하였습니다.");
+						e.printStackTrace();
+					}
+			}
+		}
+		
 		return "memberInfoModifylanding";
 	}
+	
+	@ResponseBody
+	@RequestMapping("/profileImage") 
+	public String profileImage(HttpServletRequest request, Model model) {
+		MainDAO mapper = sqlSession.getMapper(MainDAO.class);
+		String id = request.getParameter("id").trim();
+		String profileImageName = mapper.getProfileImageName(id);
+		logger.info("profileImageName -> {}", profileImageName);
+		return profileImageName;
+	}
+	
+	
 	
 	@RequestMapping("/write")
 	public String write(HttpServletRequest request, Model model) {

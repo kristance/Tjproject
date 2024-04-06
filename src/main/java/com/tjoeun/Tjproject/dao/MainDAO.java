@@ -84,6 +84,13 @@ public interface MainDAO {
 //	memberInfo update
 	int updateInfo(MemberVO memberVO);
 
+	
+//	save name of profile images 
+	void saveMemberProfileImageName(HashMap<String, String> hmap);
+	
+//	get profile images file name
+	String getProfileImageName(String id);
+
 
 
 	
